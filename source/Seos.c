@@ -1,81 +1,108 @@
-#include "seos.h"
-#include "lrc.h"
-#include "rc.h"
-#include "lcd.h"
+#include "Seos.h"
 
-/* PUBLIC FLAGS */
-static volatile uint32_t Flag_measure;
-static volatile uint32_t Flag_print;
+/* Public Flags */
+static volatile uint8_t FLAG_sense_proximity;
+static volatile uint8_t FLAG_sense_water_level;
 
-/* PRIVATE */
-int seos_init(void);
+uint8_t FLAG_cat_detected;
+uint8_t FLAG_low_water_level;
+uint8_t FLAG_critical_water_level;
 
-static volatile uint8_t counter_measure;
-static volatile uint8_t counter_print;
+/* Private */
+void seos_init(void);
 
-void SysTick_Handler(void) {
-	SEOS_Schedule();
-}
+static volatile uint8_t counter_sense_proximity;
+static volatile uint8_t counter_sense_water_level;
 
-int seos_init(void)
+void SysTick_Handler(void)
 {
-	Flag_measure  = 0;
-	Flag_print = 0;
-	//se inicializan los flags y contadores
-	counter_measure = 4;
-	counter_print = 0;
-	
-	//se configura el sistem tick para interrupir una vez cada 100 ms
-	if (SysTick_Config(SystemCoreClock / 10)){
-		//error handling
-	}
-
-	return 0;
+	SEOS_Scheduler();
 }
 
-int SEOS_Boot(void) {
-	//inicializa todos los módulos
-	LCD_init();
-	RC_init();
-	LRC_init();
+void seos_init(void)
+{
+	/* Periodic Events FLAGS */
+	FLAG_sense_proximity = 0;
+	counter_sense_proximity = 0;
+	FLAG_sense_water_level = 0;
+	counter_sense_water_level = 0;
+
+	/* Aperiodic Events FLAGS */
+	FLAG_low_water_level = 0;
+	FLAG_critical_water_level = 0;
+	FLAG_cat_detected = 0;
+
+	if(SysTick_Config(SystemCoreClock/10))
+	{ /* Error handling */ }
+}
+
+void SEOS_Boot()
+{
 	seos_init();
-	return 0;
+
+	/* Init Inputs */
+	CatProximitySensor_Init();
+
+	/* Init Outputs */
+	WaterBomb_Init();
+	Leds_Init();
+	LCD_Init();
+	
+	/* Init App */
+	Controller_Init();
 }
 
-int SEOS_Schedule(void)
+void SEOS_Scheduler()
 {
-	//el planificador levanta el flag de las tareas que se tengan que despachar
-	if(++counter_measure == OVERF_MEASURE)
+	if(++counter_sense_proximity == OVRF_SENSE_PROXIMITY)
 	{
-		Flag_measure   = 1; 
-		counter_measure = 0;
+		FLAG_sense_proximity    = 1;
+		counter_sense_proximity = 0;
 	}
-	if(++counter_print == OVERF_PRINT)
+	if(++counter_sense_water_level == OVRF_SENSE_WATER_LEVEL)
 	{
-		Flag_print  = 1; 
-		counter_print= 0;
+		FLAG_sense_water_level    = 1;
+		counter_sense_water_level = 0;
 	}
-	return 0;
 }
 
-int SEOS_Dispatch(void)
+void SEOS_Dispatcher(void)
+/* Lineas del medidor de agua comentadas */
 {
-	//el despachador ejecuta las tareas que estén pendientes y baja los flags
-	if(Flag_measure) {
-		LRC_measure();
-		RC_measure();
-		Flag_measure = 0;
+	/* Non-Periodic Events Handling */
+	if(FLAG_cat_detected)
+	{
+		Controller_CatDetected();
 	}
-	if(Flag_print){
-		LRC_print();
-		RC_Print();
-		Flag_print = 0;
+
+	/*
+	if(FLAG_low_water_level)
+	{
+		if(FLAG_critical_water_level)
+		{
+			Controller_CriticalWaterLevel();
+		}
+		Controller_LowWaterLevel();
 	}
-	return 0;
+	*/
+
+	/* Periodic Events Handling  */
+	if(FLAG_sense_proximity)
+	{
+		FLAG_sense_proximity = 0;
+		CatProximitySensor_SenseProximity();
+	}
+
+	/*
+	if(FLAG_sense_water_level)
+	{
+		FLAG_sense_water_level = 0;
+		WaterLevelSensor_SenseWaterLevel();
+	}
+	*/
 }
 
-int SEOS_Sleep(void)
+void SEOS_Sleep()
 {
-	//sleep no se implementa en la simulación
-	return 0;
+
 }

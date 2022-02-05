@@ -1,27 +1,24 @@
-/*
-(CAT_DETECTED, MANUAL_INTERRUPTOR, PUMP_TIMER) -> (Encender Motor, Informar Display)
- 
-(LOW WATER LEVEL) -> (Encender LED, Informar Display)
-*/
-char[16] cat_name;
+#include "Controller.h"
 
-void Controller_init()
+void Controller_Init()
 {
-
 }
 
-void Controller_setup(char * name)
+void Controller_CatDetected()
 {
-cat_name = name;
+	WaterBomb_StartPump();
+	//Imprimir("I tawt I taw a puddy tat");
 }
 
-void Controller_catDetected()
+void Controller_CriticalWaterLevel()
 {
-    //informar display
-    WaterBomb_startPumping();
-    delay_s(120);
-    WaterBomb_stopPumping();
+	WaterBomb_StopPump();
+	Leds_WaterLevel_On();
+	//Imprimir("Fill with water to start pump");
 }
 
-private void lowWaterLevel()
-
+void Controller_LowWaterLevel()
+{
+	//Imprimir("Low Water Level");
+	Leds_WaterLevel_On();
+}
