@@ -4,11 +4,7 @@
 #include <stm32f103x6.h>               
 #include <stdint.h>
 
-#define CRITICAL_LEVEL 1000
-#define MINIMUM_LEVEL 3000
-
 void WaterLevelSensor_Init(void);
-void WaterLevelSensor_SenseWaterLevel(void);
 uint16_t WaterLevelSensor_GetWaterLevel(void);
 
 #endif

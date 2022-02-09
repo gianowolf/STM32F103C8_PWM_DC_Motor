@@ -11,5 +11,7 @@
 
 void CatProximitySensor_Init(void);
 void CatProximitySensor_SenseProximity(void);
-void sendTrigger(void);
+
+
+
 #endif

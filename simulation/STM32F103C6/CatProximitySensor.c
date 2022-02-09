@@ -25,8 +25,7 @@ void CatProximitySensor_Init()
 	FLAG_cat_detected = 0;	
 }
 
-void CatProximitySensor_SenseProximity()
-{
+uint8_t CatProximitySensor_SenseProximity() {
 	sendTrigger();
 	TIM2->CR1 = 1; 					/* Start counting up */
 
@@ -43,7 +42,7 @@ void CatProximitySensor_SenseProximity()
 	TIM2->CR1 = 0; 					/* Stop counting */
 	TIM2->CNT = 0;					/* Reset counter */
 
-	FLAG_cat_detected = (distance<TRIGGER_DISTANCE) ? 1 : 0;
+	return (distance<TRIGGER_DISTANCE) ? 1 : 0;
 }
 
 void sendTrigger()
