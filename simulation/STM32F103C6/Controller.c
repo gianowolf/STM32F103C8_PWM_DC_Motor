@@ -10,6 +10,11 @@ void Controller_CatDetected()
 	//Imprimir("I tawt I taw a puddy tat");
 }
 
+void Controller_CatMissing()
+{
+	//WaterBomb_ProgressiveStopPump();	
+}
+
 void Controller_CriticalWaterLevel()
 {
 	WaterBomb_StopPump();
