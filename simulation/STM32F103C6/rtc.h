@@ -6,11 +6,11 @@
 void RTC_init(void);
 // Function that sets the seconds, minutes, hours, day, month, year
 void RTC_setTime(uint8_t, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
-void RTC_getSeconds(uint8_t*);
-void RTC_getMinutes(uint8_t*);
-void RTC_getHours(uint8_t*);
-void RTC_getDay(uint8_t*);
-void RTC_getMonth(uint8_t*);
-void RTC_getYear(uint8_t*);
+uint8_t RTC_getSeconds(void);
+uint8_t RTC_getMinutes(void);
+uint8_t RTC_getHours(void);
+uint8_t RTC_getDay(void);
+uint8_t RTC_getMonth(void);
+uint8_t RTC_getYear(void);
 
 #endif

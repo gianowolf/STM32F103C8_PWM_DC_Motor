@@ -83,23 +83,23 @@ uint8_t readData(uint8_t add) {
 	return toInt(I2C1->DR);
 }
 
-void RTC_getSeconds(uint8_t *sec) {
-	*sec = readData(0x00);
+uint8_t RTC_getSeconds(void) {
+	return readData(0x00);
 }
-void RTC_getMinutes(uint8_t *min) {
-	*min = readData(0x01);
+uint8_t RTC_getMinutes(void) {
+	return readData(0x01);
 }
-void RTC_getHours(uint8_t *hour) {
-	*hour = readData(0x02);
+uint8_t RTC_getHours(void) {
+	return readData(0x02);
 }
-void RTC_getDay(uint8_t *day) {
-	*day = readData(0x04);
+uint8_t RTC_getDay(void) {
+	return readData(0x04);
 }
-void RTC_getMonth(uint8_t *month) {
-	*month = readData(0x05);
+uint8_t RTC_getMonth(void) {
+	return readData(0x05);
 }
-void RTC_getYear(uint8_t *year) {
-	*year = readData(0x06);
+uint8_t RTC_getYear(void) {
+	return readData(0x06);
 }
 
 void i2c_start() {
