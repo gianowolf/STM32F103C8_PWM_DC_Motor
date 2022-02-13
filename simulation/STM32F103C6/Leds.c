@@ -1,12 +1,22 @@
 #include "Leds.h"
 
 void Leds_Init(void) {
-	LED_G_pin > 7 ? LED_G_port->CRH = (LED_G_port->CRH | (3<<((LED_G_pin - 8)*4))) & (0xFFFFFFFF & (3<<((LED_G_pin - 8)*4))) 
-					: LED_G_port->CRL = (LED_G_port->CRL | (3<<(LED_G_pin*4))) & (0xFFFFFFFF & (3<<(LED_G_pin*4)));
-	LED_Y_pin > 7 ? LED_Y_port->CRH = (LED_Y_port->CRH | (3<<((LED_Y_pin - 8)*4))) & (0xFFFFFFFF & (3<<((LED_Y_pin - 8)*4))) 
-					: LED_Y_port->CRL = (LED_Y_port->CRL | (3<<(LED_Y_pin*4))) & (0xFFFFFFFF & (3<<(LED_Y_pin*4)));
-	LED_R_pin > 7 ? LED_R_port->CRH = (LED_R_port->CRH | (3<<((LED_R_pin - 8)*4))) & (0xFFFFFFFF & (3<<((LED_R_pin - 8)*4))) 
-					: LED_R_port->CRL = (LED_R_port->CRL | (3<<(LED_R_pin*4))) & (0xFFFFFFFF & (3<<(LED_R_pin*4)));
+	RCC->APB2ENR |= LED_G_clock | LED_Y_clock | LED_R_clock;
+	if (LED_G_pin > 7) {
+		LED_G_port->CRH = ((LED_G_port->CRH | (3<<((LED_G_pin - 8)*4))) & (0xFFFFFFFF & ~(12<<((LED_G_pin - 8)*4))));
+	} else {
+		LED_G_port->CRL = ((LED_G_port->CRL | (3<<(LED_G_pin * 4))) & (0xFFFFFFFF & ~(12<<(LED_G_pin * 4))));
+	}
+	if (LED_Y_pin > 7) {
+		LED_Y_port->CRH = ((LED_Y_port->CRH | (3<<((LED_Y_pin - 8)*4))) & (0xFFFFFFFF & ~(12<<((LED_Y_pin - 8)*4))));
+	} else {
+		LED_Y_port->CRL = ((LED_Y_port->CRL | (3<<(LED_Y_pin * 4))) & (0xFFFFFFFF & ~(12<<(LED_Y_pin * 4))));
+	}
+	if (LED_R_pin > 7) {
+		LED_R_port->CRH = ((LED_R_port->CRH | (3<<((LED_R_pin - 8)*4))) & (0xFFFFFFFF & ~(12<<((LED_R_pin - 8)*4))));
+	} else {
+		LED_R_port->CRL = ((LED_R_port->CRL | (3<<(LED_R_pin * 4))) & (0xFFFFFFFF & ~(12<<(LED_R_pin * 4))));
+	}
 	LED_G_port->BRR = (1<<LED_G_pin);
 	LED_Y_port->BRR = (1<<LED_Y_pin);
 	LED_R_port->BRR = (1<<LED_R_pin);
