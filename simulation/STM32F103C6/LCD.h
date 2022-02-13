@@ -2,7 +2,8 @@
 #define LCD_H
 
 #include <stdint.h>
-#include <stm32f103x6.h>                  // Device header
+#include <stm32f103x6.h> // Device header
+
 
 //Uncomment this if LCD 4 bit interface is used
 #define LCD_4bit
@@ -22,11 +23,11 @@
 #define LCD_D2	2	//define MCU pin connected to LCD D1
 #define LCD_D3	3	//define MCU pin connected to LCD D2
 #define LCD_D4	4	//define MCU pin connected to LCD D3
-#define LCD_D5	2	//define MCU pin connected to LCD D4
+#define LCD_D5	5	//define MCU pin connected to LCD D4
 #define LCD_D6	6	//define MCU pin connected to LCD D5
-#define LCD_D7	3	//define MCU pin connected to LCD D6
+#define LCD_D7	7	//define MCU pin connected to LCD D6
 #define LCD_RS	12	//define MCU pin connected to LCD RS
-#define LCD_RW	11	//define MCU pin connected to LCD R/W (If RW is grounded define to the same value as RS)
+#define LCD_RW	11	//define MCU pin connected to LCD R/W
 #define LCD_E	10	//define MCU pin connected to LCD E
 
 //commands
