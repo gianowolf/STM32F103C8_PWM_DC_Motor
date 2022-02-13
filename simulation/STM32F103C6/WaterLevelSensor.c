@@ -1,6 +1,9 @@
 #include "WaterLevelSensor.h"
 
+#define PI 3.141592654
+
 #include "utils.h"
+
 
 void WaterLevelSensor_Init() {
 	// Enable clocks
@@ -22,7 +25,18 @@ void WaterLevelSensor_Init() {
 }
 
 uint16_t WaterLevelSensor_GetWaterLevel() {
+	volatile uint32_t height;
 	ADC1->CR2 |= 1; // Starts a conversion
 	while((ADC1->SR & (1<<1)) == 0){} // Waits for conversion to finish
-	return (uint16_t) ADC1->DR; // Returns the converted data and resets SR EOC
+	height = ADC1->DR; // Read the converted data and resets SR EOC
+	if (height < 3125) {
+		return 0;
+	}
+	height = (height - 3125) * 64; // Height value in micrometers
+#ifdef CUBOID_TANK // Cuboid tank part
+	height *= (TANK_WIDTH * TANK_LENGTH);
+#else // Cylindrical tank part
+	height = (TANK_RADIUS * TANK_RADIUS * height * PI );
+#endif
+	return height/10000; // Returns the calculated volume in cm3
 }
