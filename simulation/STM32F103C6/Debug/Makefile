@@ -42,14 +42,18 @@ BIN2HEX=fromelf.exe
 #        C:/Users/Edelmiro/Desktop/Taller de proyecto I/Proyectos/TP4-git/STM32F103C8_PWM_DC_Motor/simulation/STM32F103C6/CatProximitySensor.c
 #     C:/Users/Edelmiro/Desktop/Taller de proyecto I/Proyectos/TP4-git/STM32F103C8_PWM_DC_Motor/simulation/STM32F103C6/Debug/utils.o: TOOL=CC
 #        C:/Users/Edelmiro/Desktop/Taller de proyecto I/Proyectos/TP4-git/STM32F103C8_PWM_DC_Motor/simulation/STM32F103C6/utils.c
+#     C:/Users/Edelmiro/Desktop/Taller de proyecto I/Proyectos/TP4-git/STM32F103C8_PWM_DC_Motor/simulation/STM32F103C6/Debug/rtc.o: TOOL=CC
+#        C:/Users/Edelmiro/Desktop/Taller de proyecto I/Proyectos/TP4-git/STM32F103C8_PWM_DC_Motor/simulation/STM32F103C6/rtc.c
+#     C:/Users/Edelmiro/Desktop/Taller de proyecto I/Proyectos/TP4-git/STM32F103C8_PWM_DC_Motor/simulation/STM32F103C6/Debug/buttons.o: TOOL=CC
+#        C:/Users/Edelmiro/Desktop/Taller de proyecto I/Proyectos/TP4-git/STM32F103C8_PWM_DC_Motor/simulation/STM32F103C6/buttons.c
 
 # Build tree:
 all:	Debug
 
 Debug:	Debug.elf
 
-Debug.elf:	main.o SYSTEM~1.o STARTU~1.o CONTRO~1.o Leds.o LCD.o WATERB~1.o WATERL~1.o Seos.o CATPRO~1.o utils.o 
-	$(LD)  $(LDFLAGS)  "main.o" "SYSTEM~1.o" "STARTU~1.o" "CONTRO~1.o" "Leds.o" "LCD.o" "WATERB~1.o" "WATERL~1.o" "Seos.o" "CATPRO~1.o" "utils.o" --output "Debug.elf"
+Debug.elf:	main.o SYSTEM~1.o STARTU~1.o CONTRO~1.o Leds.o LCD.o WATERB~1.o WATERL~1.o Seos.o CATPRO~1.o utils.o rtc.o buttons.o 
+	$(LD)  $(LDFLAGS)  "main.o" "SYSTEM~1.o" "STARTU~1.o" "CONTRO~1.o" "Leds.o" "LCD.o" "WATERB~1.o" "WATERL~1.o" "Seos.o" "CATPRO~1.o" "utils.o" "rtc.o" "buttons.o" --output "Debug.elf"
 
 main.o:	../main.c 
 	$(CC) $(CCFLAGS)  "../main.c" -c -o "main.o"
@@ -84,6 +88,12 @@ CATPRO~1.o:	../CatProximitySensor.c
 utils.o:	../utils.c 
 	$(CC) $(CCFLAGS)  "../utils.c" -c -o "utils.o"
 
+rtc.o:	../rtc.c 
+	$(CC) $(CCFLAGS)  "../rtc.c" -c -o "rtc.o"
+
+buttons.o:	../buttons.c 
+	$(CC) $(CCFLAGS)  "../buttons.c" -c -o "buttons.o"
+
 # tidy - delete all temporary files which are not involved in the target generation
 tidy:
 
@@ -101,3 +111,5 @@ clean:	tidy
 	rm -rf Seos.o
 	rm -rf CATPRO~1.o
 	rm -rf utils.o
+	rm -rf rtc.o
+	rm -rf buttons.o
