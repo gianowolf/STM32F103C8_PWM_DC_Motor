@@ -1,7 +1,6 @@
 #include "CatProximitySensor.h"
 
 uint32_t t, t0, distance;
-extern uint8_t FLAG_cat_detected;
 
 void sendTrigger(void);
 
@@ -23,8 +22,6 @@ void CatProximitySensor_Init()
 	/* TRIGGER SETUP */
 	GPIOA->CRL |= 0x00003000; 			/* PA3: as Output mode*/
 	GPIOA->BRR  = (1<<3);           	/* make PA pin 3 low */
-	
-	FLAG_cat_detected = 0;	
 }
 
 uint8_t CatProximitySensor_SenseProximity() {
