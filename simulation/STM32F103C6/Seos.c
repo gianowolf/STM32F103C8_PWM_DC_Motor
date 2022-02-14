@@ -7,10 +7,12 @@ static volatile uint8_t FLAG_sense_water_level;
 uint8_t FLAG_cat_detected;
 uint8_t FLAG_low_water_level;
 uint8_t FLAG_critical_water_level;
+uint8_t FLAG_MOTOR = 0;
 
 /* Private */
 void seos_init(void);
 
+uint32_t counter_motor;
 static volatile uint8_t counter_sense_proximity;
 static volatile uint8_t counter_sense_water_level;
 
@@ -54,43 +56,20 @@ void SEOS_Boot()
 
 void SEOS_Scheduler()
 {
-	if(++counter_sense_proximity == OVRF_SENSE_PROXIMITY)
+	if(++counter_motor == 3)
 	{
-		FLAG_sense_proximity    = 1;
-		counter_sense_proximity = 0;
-	}
-	if(++counter_sense_water_level == OVRF_SENSE_WATER_LEVEL)
-	{
-		FLAG_sense_water_level    = 1;
-		counter_sense_water_level = 0;
-	}
+		FLAG_MOTOR = 1;
+	}	
+	
 }
 
 void SEOS_Dispatcher(void)
 /* Lineas del medidor de agua comentadas */
 {
 	/* Non-Periodic Events Handling */
-	if(FLAG_cat_detected)
-	{
-		Controller_CatDetected();
-	}
-
-	/*
-	if(FLAG_low_water_level)
-	{
-		if(FLAG_critical_water_level)
-		{
-			Controller_CriticalWaterLevel();
-		}
-		Controller_LowWaterLevel();
-	}
-	*/
-
-	/* Periodic Events Handling  */
-	if(FLAG_sense_proximity)
-	{
-		FLAG_sense_proximity = 0;
-		CatProximitySensor_SenseProximity();
+	if(FLAG_MOTOR){
+		WaterBomb_StartPump();
+		FLAG_MOTOR = 0;
 	}
 
 	/*
@@ -104,5 +83,4 @@ void SEOS_Dispatcher(void)
 
 void SEOS_Sleep()
 {
-
 }

@@ -7,6 +7,5 @@
 void WaterBomb_Init(void);
 void WaterBomb_StartPump(void);
 void WaterBomb_StopPump(void);
-uint8_t WaterBomb_IsEnabled(void);
 
 #endif
