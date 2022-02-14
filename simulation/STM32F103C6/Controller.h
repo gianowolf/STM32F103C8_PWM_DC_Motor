@@ -8,7 +8,10 @@
 #include "WaterBomb.h"
 #include "Leds.h"
 
-#define EMPTY_LEVEL 3 // Level at wich the tank is considered empty
+#define LOW_LEVEL 50
+#define NOT_LOW_LEVEL 60
+#define EMPTY_LEVEL 10 // Level at wich the tank is considered empty
+#define NOT_EMPTY_LEVEL 25
 
 void Controller_Init(void);
 void Controller_CatDetected(void);

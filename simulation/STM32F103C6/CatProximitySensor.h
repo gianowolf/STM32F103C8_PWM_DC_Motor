@@ -10,8 +10,7 @@
 #define CALIB 0.00216       /* (error * t) / (clk_freq [MHz] * calib_factor [us/cm] =  (0.9 * t) / (7.2 * 58) = t / 2.16e-03 */
 
 void CatProximitySensor_Init(void);
-void CatProximitySensor_SenseProximity(void);
-
+uint8_t CatProximitySensor_SenseProximity(void);
 
 
 #endif

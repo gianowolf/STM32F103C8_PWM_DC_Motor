@@ -68,7 +68,7 @@ void LCD_goToXY(uint8_t, uint8_t); //Cursor to X Y position
 void LCD_clear(void); //Clears LCD
 void LCD_cursorOn(void);		//Underline cursor ON
 void LCD_cursorOnBlink(void);	//Underline blinking cursor ON
-void LCD_cursorOFF(void);		//Cursor OFF
+void LCD_cursorOff(void);		//Cursor OFF
 void LCD_visible(void);			//LCD visible
 
 #endif

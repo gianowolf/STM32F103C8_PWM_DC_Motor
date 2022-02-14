@@ -6,7 +6,13 @@
 #include "WaterBomb.h"
 #include "LCD.h"
 #include "rtc.h"
-#include "CatProximitySensor();
+#include "CatProximitySensor.h"
+
+struct Time {
+	uint8_t sec;
+	uint8_t min;
+	uint8_t hour;
+};
 
 typedef enum {
 	NORMAL, WORKING_CAT, WORKING, LOW, EMPTY, CLOCK
@@ -20,12 +26,15 @@ static uint8_t timeDate[] = {0,0,0,0,0,0,0,0,0,0,0,0};
 static uint8_t place = 0;
 static uint32_t drinkedWater = 0;
 uint8_t sec, min, hour, day, month, year;
+static struct Time startTime;
 
 void writeTimeDate(void);
 void writeDrinkedWater(void);
 uint8_t oneHour(void);
 uint8_t newDay(void);
-void loadTime(void)
+void setStartTime(void);
+void loadTime(void);
+uint32_t elapsedSeconds(void);
 
 void Controller_Init() {
 	RTC_init();
@@ -63,39 +72,44 @@ void Controller_Update(){
 				WaterBomb_StartPump();
 				prev_state = NORMAL;
 				prev_level = water_level;
+				setStartTime();
 				state = WORKING_CAT;
 			} else if (oneHour()) {
 				WaterBomb_StartPump();
+				setStartTime();
 				prev_state = NORMAL;
 				state = WORKING;
 			}
 			break;
 		case WORKING:
-			if (timeout) {
+			if (elapsedSeconds() > 60) {
 				WaterBomb_StopPump();
 				state = prev_state;
 			} else if (CatProximitySensor_SenseProximity()) {
+				setStartTime();
 				prev_level = water_level;
 				state = WORKING_CAT;
 			}
 			break;
 		case WORKING_CAT:
 			if (!CatProximitySensor_SenseProximity()) {
-				timeout--;
-				if (timeout) {
+				if (elapsedSeconds() > 5) {
 					water_level = WaterLevelSensor_GetWaterLevel();
 					if (water_level < prev_level) {
 						drinkedWater += (prev_level - water_level);
 					}
 					WaterBomb_StopPump();
-					LCD_writeDrinkedWater();
+					writeDrinkedWater();
 					state = prev_state;
 				}
-			} else if (WaterLevelSensor_GetWaterLevel() < EMPTY_LEVEL) {
-				WaterBomb_StopPump();
-				LCD_writeDrinkedWater();
-				Leds_WaterLevel_Empty();
-				state = EMPTY;
+			} else {
+				setStartTime();
+				if (WaterLevelSensor_GetWaterLevel() < EMPTY_LEVEL) {
+					WaterBomb_StopPump();
+					writeDrinkedWater();
+					Leds_WaterLevel_Empty();
+					state = EMPTY;
+				}
 			}
 			break;
 		case LOW:
@@ -115,9 +129,11 @@ void Controller_Update(){
 				WaterBomb_StartPump();
 				prev_state = LOW;
 				prev_level = water_level;
+				setStartTime();
 				state = WORKING_CAT;
 			} else if (oneHour()) {
 				WaterBomb_StartPump();
+				setStartTime();
 				prev_state = LOW;
 				state = WORKING;
 			}
@@ -142,7 +158,7 @@ void Controller_Update(){
 				timeDate[place] = (timeDate[place] + 1) % 10;
 				LCD_sendChar(timeDate[place] + '0');
 			} else if (BUTTON_B()) {
-				if (lugar++ == 12) {
+				if (place++ == 12) {
 					sec = timeDate[0] * 10 + timeDate[1];
 					min = timeDate[2] * 10 + timeDate[3];
 					hour = timeDate[4] * 10 + timeDate[5];
@@ -151,7 +167,7 @@ void Controller_Update(){
 					year = timeDate[10] * 10 + timeDate[11];
 					RTC_setTime(sec, min, hour, day, month, year);
 					LCD_cursorOff();
-					LCD_writeDrinkedWater();
+					writeDrinkedWater();
 					state = prev_state;
 				}
 			}
@@ -219,6 +235,16 @@ void writeDrinkedWater() {
 	LCD_sendString((uint8_t*)" mL", 3);
 }
 
+void setStartTime() {
+	startTime.sec = RTC_getSeconds();
+	startTime.min = RTC_getMinutes();
+	startTime.hour = RTC_getHours();
+}
+
+uint32_t elapsedSeconds() {
+	return ((RTC_getHours() * 3600 + RTC_getMinutes() * 60 + RTC_getSeconds()) - (startTime.hour * 3600 + startTime.min * 60 + startTime.sec));
+}
+
 void loadTime() {
 	uint8_t aux;
 	aux = RTC_getSeconds();
@@ -242,17 +268,19 @@ void loadTime() {
 }
 
 uint8_t oneHour() {
-	static uint8_t lastH = RTC_getHours();
+	static uint8_t lastH = 25;
 	uint8_t actualH = RTC_getHours();
+	if (lastH == 25) { lastH = RTC_getHours(); }
 	if (lastH != actualH) {
 		lastH = actualH;
 		return 1;
 	} return 0;
 }
 
-uint8_t oneHour() {
-	static uint8_t today = RTC_getDay();
+uint8_t newDay() {
+	static uint8_t today = 32;
 	uint8_t day = RTC_getDay();
+	if (today == 32) { today = RTC_getDay(); }
 	if (today != day) {
 		today = day;
 		return 1;

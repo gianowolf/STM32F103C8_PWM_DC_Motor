@@ -223,7 +223,7 @@ void LCD_cursorOnBlink(void){ //displays LCD blinking cursor
 	LCD_sendCommand(0x0F);
 }
 
-void LCD_cursorOFF(void){ //turns OFF cursor
+void LCD_cursorOff(void){ //turns OFF cursor
 	LCD_sendCommand(0x0C);
 }
 

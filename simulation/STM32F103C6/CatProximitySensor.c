@@ -3,6 +3,8 @@
 uint32_t t, t0, distance;
 extern uint8_t FLAG_cat_detected;
 
+void sendTrigger(void);
+
 void CatProximitySensor_Init()
 {
 	RCC->APB2ENR |= 0xFC;	   			/* enable clocks for GPIO */

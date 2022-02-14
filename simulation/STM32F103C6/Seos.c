@@ -40,14 +40,6 @@ void SEOS_Boot()
 {
 	seos_init();
 
-	/* Init Inputs */
-	CatProximitySensor_Init();
-
-	/* Init Outputs */
-	WaterBomb_Init();
-	Leds_Init();
-	LCD_Init();
-	
 	/* Init App */
 	Controller_Init();
 }
@@ -72,7 +64,6 @@ void SEOS_Dispatcher(void)
 	/* Non-Periodic Events Handling */
 	if(FLAG_cat_detected)
 	{
-		Controller_CatDetected();
 	}
 
 	/*
