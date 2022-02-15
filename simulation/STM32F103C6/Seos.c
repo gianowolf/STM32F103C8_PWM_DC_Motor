@@ -17,7 +17,7 @@ void seos_init(void) {
 	counter_update = 0;
 	flag_update = 0;
 	
-	if(SysTick_Config(SystemCoreClock/10)) // System tick every 100 ms
+	if(SysTick_Config(SystemCoreClock/100)) // System tick every 100 ms
 	{ /* Error handling */ }
 }
 

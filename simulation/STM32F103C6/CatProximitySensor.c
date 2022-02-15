@@ -1,6 +1,6 @@
 #include "CatProximitySensor.h"
 
-uint32_t t, t0, distance;
+volatile uint32_t t, t0, distance;
 
 void sendTrigger(void);
 
@@ -16,7 +16,7 @@ void CatProximitySensor_Init()
 	GPIOA->ODR |= 1<<2;	
 	TIM2->CCMR2 = 0x001; 				/* Pin TIM2_CH3 as input for channel 3 */
 	TIM2->CCER = 0x1 << 8; 				/* CC3P = 0 (rising), CC3E = 1 */
-	TIM2->PSC = 1 - 1; 					/* Prescaler = 1 for Proteus simulation */
+	TIM2->PSC = 7200-1; 					/* Prescaler = 1 for Proteus simulation */
 	TIM2->ARR = 50000-1;
 
 	/* TRIGGER SETUP */

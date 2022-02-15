@@ -37,23 +37,23 @@ void loadTime(void);
 uint32_t elapsedSeconds(void);
 
 void Controller_Init() {
-	RTC_init();
+	//RTC_init();
 	LCD_init();
 	WaterBomb_Init();
 	WaterLevelSensor_Init();
 	CatProximitySensor_Init();
 	Leds_Init();
 	BUTTONS_init();
-	loadTime();
+	//loadTime();
 	LCD_cursorOff();
 	writeDrinkedWater();
 	state = NORMAL;
 }
 
 void Controller_Update(){
-	if (newDay()) {
+	/*if (newDay()) {
 		drinkedWater = 0;
-	}
+	}*/
 	switch (state) {
 		case NORMAL:
 			water_level = WaterLevelSensor_GetWaterLevel();
@@ -74,12 +74,12 @@ void Controller_Update(){
 				prev_level = water_level;
 				setStartTime();
 				state = WORKING_CAT;
-			} else if (oneHour()) {
+			}/* else if (oneHour()) {
 				WaterBomb_StartPump();
 				setStartTime();
 				prev_state = NORMAL;
 				state = WORKING;
-			}
+			}*/
 			break;
 		case WORKING:
 			if (elapsedSeconds() > 60) {
@@ -93,7 +93,7 @@ void Controller_Update(){
 			break;
 		case WORKING_CAT:
 			if (!CatProximitySensor_SenseProximity()) {
-				if (elapsedSeconds() > 5) {
+				//if (elapsedSeconds() > 5) {
 					water_level = WaterLevelSensor_GetWaterLevel();
 					if (water_level < prev_level) {
 						drinkedWater += (prev_level - water_level);
@@ -101,7 +101,7 @@ void Controller_Update(){
 					WaterBomb_StopPump();
 					writeDrinkedWater();
 					state = prev_state;
-				}
+				//}
 			} else {
 				setStartTime();
 				if (WaterLevelSensor_GetWaterLevel() < EMPTY_LEVEL) {
@@ -131,12 +131,12 @@ void Controller_Update(){
 				prev_level = water_level;
 				setStartTime();
 				state = WORKING_CAT;
-			} else if (oneHour()) {
+			}/* else if (oneHour()) {
 				WaterBomb_StartPump();
 				setStartTime();
 				prev_state = LOW;
 				state = WORKING;
-			}
+			}*/
 			break;
 		case EMPTY:
 			water_level = WaterLevelSensor_GetWaterLevel();
@@ -165,7 +165,7 @@ void Controller_Update(){
 					day = timeDate[6] * 10 + timeDate[7];
 					month = timeDate[8] * 10 + timeDate[9];
 					year = timeDate[10] * 10 + timeDate[11];
-					RTC_setTime(sec, min, hour, day, month, year);
+					//RTC_setTime(sec, min, hour, day, month, year);
 					LCD_cursorOff();
 					writeDrinkedWater();
 					state = prev_state;
@@ -221,24 +221,24 @@ void writeDrinkedWater() {
 	LCD_goToXY(0,0);
 	LCD_sendString((uint8_t*)"Agua bebida hoy:", 16);
 	LCD_goToXY(3,1);
-	LCD_sendChar((auxDW % 10) + '0');
+	LCD_sendChar((auxDW - (auxDW / 10) * 10) + '0');
 	auxDW /= 10;
 	LCD_goToXY(2,1);
-	LCD_sendChar((auxDW % 10) + '0');
+	LCD_sendChar((auxDW - (auxDW / 10) * 10) + '0');
 	auxDW /= 10;
 	LCD_goToXY(1,1);
-	LCD_sendChar((auxDW % 10) + '0');
+	LCD_sendChar((auxDW - (auxDW / 10) * 10) + '0');
 	auxDW /= 10;
 	LCD_goToXY(0,1);
-	LCD_sendChar((auxDW % 10) + '0');
+	LCD_sendChar((auxDW - (auxDW / 10) * 10) + '0');
 	LCD_goToXY(4,1);
 	LCD_sendString((uint8_t*)" mL", 3);
 }
 
 void setStartTime() {
-	startTime.sec = RTC_getSeconds();
-	startTime.min = RTC_getMinutes();
-	startTime.hour = RTC_getHours();
+	//startTime.sec = RTC_getSeconds();
+	//startTime.min = RTC_getMinutes();
+	//startTime.hour = RTC_getHours();
 }
 
 uint32_t elapsedSeconds() {
